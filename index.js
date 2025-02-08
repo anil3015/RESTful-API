@@ -5,15 +5,12 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = 5000;
 
-// Middleware
 app.use(bodyParser.json());
 
-// Connect to MongoDB
 mongoose.connect("mongodb://localhost/blog-api", { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log("Failed to connect to MongoDB", err));
 
-// Blog Schema
 const BlogSchema = new mongoose.Schema({
   title: String,
   content: String,
@@ -23,8 +20,6 @@ const BlogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model("Blog", BlogSchema);
 
-// Routes
-// 1. Create a new blog post
 app.post("/api/blogs", async (req, res) => {
   try {
     const { title, content, author } = req.body;
@@ -36,7 +31,6 @@ app.post("/api/blogs", async (req, res) => {
   }
 });
 
-// 2. Read all blog posts
 app.get("/api/blogs", async (req, res) => {
   try {
     const blogs = await Blog.find();
@@ -45,8 +39,6 @@ app.get("/api/blogs", async (req, res) => {
     res.status(500).json({ message: "Error fetching blog posts" });
   }
 });
-
-// 3. Update a blog post
 app.put("/api/blogs/:id", async (req, res) => {
   try {
     const { title, content, author } = req.body;
@@ -60,7 +52,6 @@ app.put("/api/blogs/:id", async (req, res) => {
   }
 });
 
-// 4. Delete a blog post
 app.delete("/api/blogs/:id", async (req, res) => {
   try {
     const deletedBlog = await Blog.findByIdAndDelete(req.params.id);
@@ -73,7 +64,6 @@ app.delete("/api/blogs/:id", async (req, res) => {
   }
 });
 
-// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
